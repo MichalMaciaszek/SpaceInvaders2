@@ -63,16 +63,12 @@ public class SpaceInvadersView extends SurfaceView implements Runnable{
     private Invader[] invaders = new Invader[60];
     private int numInvaders = 0;
 
-    // The player's shelters are built from bricks
-    private DefenceBrick[] bricks = new DefenceBrick[400];
-    private int numBricks;
 
     // For sound FX
     private SoundPool soundPool;
     private int playerExplodeID = -1;
     private int invaderExplodeID = -1;
     private int shootID = -1;
-    private int damageShelterID = -1;
     private int uhID = -1;
     private int ohID = -1;
 
@@ -123,14 +119,14 @@ public class SpaceInvadersView extends SurfaceView implements Runnable{
             descriptor = assetManager.openFd("invaderexplode.ogg");
             invaderExplodeID = soundPool.load(descriptor, 0);
 
-            descriptor = assetManager.openFd("damageshelter.ogg");
-            damageShelterID = soundPool.load(descriptor, 0);
+       //     descriptor = assetManager.openFd("damageshelter.ogg");
+     //       damageShelterID = soundPool.load(descriptor, 0);
 
             descriptor = assetManager.openFd("playerexplode.ogg");
             playerExplodeID = soundPool.load(descriptor, 0);
 
-            descriptor = assetManager.openFd("damageshelter.ogg");
-            damageShelterID = soundPool.load(descriptor, 0);
+           // descriptor = assetManager.openFd("damageshelter.ogg");
+         //   damageShelterID = soundPool.load(descriptor, 0);
 
             descriptor = assetManager.openFd("uh.ogg");
             uhID = soundPool.load(descriptor, 0);
@@ -169,16 +165,7 @@ public class SpaceInvadersView extends SurfaceView implements Runnable{
                 numInvaders ++;
             }
         }
-/*// Build the shelters
-        numBricks = 0;
-        for(int shelterNumber = 0; shelterNumber < 4; shelterNumber++){
-            for(int column = 0; column < 10; column ++ ) {
-                for (int row = 0; row < 5; row++) {
-                    bricks[numBricks] = new DefenceBrick(row, column, shelterNumber, screenX, screenY);
-                    numBricks++;
-                }
-            }
-        }*/
+
 
 
 
@@ -332,14 +319,14 @@ public class SpaceInvadersView extends SurfaceView implements Runnable{
 
 
         // Has the player's bullet hit the top of the screen
-        if(bullet.getImpactPointY() < 0){
+        if(bullet.getImpactPointY() < 0 || bullet.getImpactPointY() > screenY){
             bullet.setInactive();
         }
 
         // Has an invaders bullet hit the bottom of the screen
         for(int i = 0; i < invadersBullets.length; i++){
 
-            if(invadersBullets[i].getImpactPointY() > screenY){
+            if(invadersBullets[i].getImpactPointY() > screenY || invadersBullets[i].getImpactPointY() < 0 ){
                 invadersBullets[i].setInactive();
             }
         }
@@ -490,7 +477,7 @@ public class SpaceInvadersView extends SurfaceView implements Runnable{
                 paused = false;
 
                 if(motionEvent.getY() > screenY - (screenY / 8) && (motionEvent.getX() > playerShip.getX() + 200 || motionEvent.getX() < playerShip.getX() - 200)) {
-                    if (motionEvent.getX() > playerShip.getX()) {
+                    if (motionEvent.getX() > playerShip.getX() && playerShip.getX() < screenX) {
                         playerShip.setMovementState(playerShip.RIGHT);
 
                     } else {
@@ -499,7 +486,7 @@ public class SpaceInvadersView extends SurfaceView implements Runnable{
                     }
 
                 }
-                if(motionEvent.getY() < screenY - 7*(screenY / 8)) {
+                if(motionEvent.getY() < screenY - 7*(screenY / 8)&& (motionEvent.getX() > druga.getX() + 200 || motionEvent.getX() < druga.getX() - 200)) {
                     if (motionEvent.getX() > druga.getX()){
                     druga.setMovementState(druga.RIGHT);}
                     else { druga.setMovementState(druga.LEFT);
@@ -517,8 +504,20 @@ public class SpaceInvadersView extends SurfaceView implements Runnable{
                     }
                 }
 
+                if(motionEvent.getY()< screenY - 7*(screenY / 8) && motionEvent.getX() < druga.getX() + 200 && motionEvent.getX() > druga.getX() - 200) {
+                    // Shots fired
+                    if(bullet.shoot(druga.getX()+ druga.getLength()/2,0,bullet.DOWN)){
+                        soundPool.play(shootID, 1, 1, 0, 0, 1);
+                    }
+                }
+
                 break;
 
+
+            case MotionEvent.ACTION_POINTER_DOWN:
+                if(bullet.shoot(playerShip.getX()+ playerShip.getLength()/2,screenY,bullet.UP)){
+                    soundPool.play(shootID, 1, 1, 0, 0, 1);}
+                    break;
 
             // Player has removed finger from screen
             case MotionEvent.ACTION_UP:

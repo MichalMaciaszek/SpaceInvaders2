@@ -39,6 +39,7 @@ public class SpaceInvadersView extends SurfaceView implements Runnable{
 
     // This variable tracks the game frame rate
     private long fps;
+    //checking
 
     // This is used to help calculate the fps
     private long timeThisFrame;

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.RectF;
+import android.graphics.Matrix;
 
 import java.util.Random;
 
@@ -16,7 +17,9 @@ public class Invader {
     // The player ship will be represented by a Bitmap
     private Bitmap bitmap1;
     private Bitmap bitmap2;
-
+    private Bitmap bInput;
+    private Bitmap bInput2;
+    private boolean change2;
     // How long and high our paddle will be
     private float length;
     private float height;
@@ -38,7 +41,7 @@ public class Invader {
 
     boolean isVisible;
 
-    public Invader(Context context, int row, int column, int screenX, int screenY) {
+    public Invader(Context context, int row, int column, int screenX, int screenY, boolean change) {
 
         // Initialize a blank RectF
         rect = new RectF();
@@ -56,9 +59,22 @@ public class Invader {
 
 
         // Initialize the bitmap
-        bitmap1 = BitmapFactory.decodeResource(context.getResources(), R.drawable.invader1);
-        bitmap2 = BitmapFactory.decodeResource(context.getResources(), R.drawable.invader2);
+        if(change==true) {
+            bitmap1 = BitmapFactory.decodeResource(context.getResources(), R.drawable.invader1);
+            bitmap2 = BitmapFactory.decodeResource(context.getResources(), R.drawable.invader2);
+       change2=true;
+        }
+        else{
 
+            bInput = BitmapFactory.decodeResource(context.getResources(), R.drawable.invader1);
+            bInput2 = BitmapFactory.decodeResource(context.getResources(), R.drawable.invader2);
+            change2=false;
+        Matrix matrix = new Matrix();
+        matrix.preScale(1.0f, -1.0f);
+        bitmap1 = Bitmap.createBitmap(bInput, 0, 0, bInput.getWidth(), bInput.getHeight(), matrix, true);
+        bitmap2 = Bitmap.createBitmap(bInput2, 0, 0, bInput.getWidth(), bInput.getHeight(), matrix, true);
+
+        }
         // stretch the first bitmap to a size appropriate for the screen resolution
         bitmap1 = Bitmap.createScaledBitmap(bitmap1,
                 (int) (length),
@@ -78,6 +94,9 @@ public class Invader {
     public void setInvisible(){
         isVisible = false;
     }
+
+    public boolean change(){return change2;}
+
 
     public boolean getVisibility(){
         return isVisible;
@@ -134,7 +153,7 @@ public class Invader {
             shipMoving = LEFT;
         }
 
-        y = y + height;
+     //   y = y + height;
 
         shipSpeed = shipSpeed * 1.18f;
     }

@@ -20,13 +20,14 @@ public class Bullet {
 
     private int width = 1;
     private int height;
-
+    private int align;
     private boolean isActive;
 
-    public Bullet(int screenY) {
+    public Bullet(int screenY, int align) {
 
         height = screenY / 20;
         isActive = false;
+
 
         rect = new RectF();
     }
@@ -60,7 +61,7 @@ public class Bullet {
         rect.bottom = y + height;
 
     }
-
+    public int align(){return align;}
     public RectF getRect(){
         return  rect;
     }

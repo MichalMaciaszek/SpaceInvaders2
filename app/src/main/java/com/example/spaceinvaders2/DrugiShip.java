@@ -48,7 +48,7 @@ public class DrugiShip {
 
         // Start ship in roughly the screen centre
         x = screenX / 2;
-        y = screenY/20;
+        y = screenY/20 + 5;
 
         // Initialize the bitmap
         bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.playership2);
